@@ -9,8 +9,8 @@ verticies = (
     (1, 1, -1),
     (-1, 1, -1),
     (-1, -1, -1),
-    (2, -1, 1),
-    (1, 1, 1),
+    (1, -1, 1),
+    (2, 1, 1),
     (-1, -1, 1),
     (-1, 1, 1)
     )
@@ -57,6 +57,17 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.KEYDOWN:
+                # Resets the camera to it's origin
+                if event.key == pygame.K_x:
+                    glLoadIdentity()
+                    gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                    glTranslatef(0.0, 0.0, -5)
+                    x_current = 0
+                    y_current = 0
+                if event.key == pygame.K_f:
+                    gluLookAt(0, -3, 0, 0, 0, 0, -1, 0, 0)
+
 
         # Directional key rotation
         pressed_key = pygame.key.get_pressed()
