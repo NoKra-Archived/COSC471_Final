@@ -29,6 +29,7 @@ def main():
     x_rot_current = 0
     y_rot_current = 0
 
+
     z_tran_current = z_tran_start
     y_tran_current = y_tran_start
 
@@ -114,6 +115,7 @@ def main():
         """
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+
         Cube()
         pygame.display.flip()
         pygame.time.wait(10)
