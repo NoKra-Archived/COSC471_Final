@@ -307,7 +307,16 @@ class PrinterHead:
         body_right_mid_bottom_anchor = (body_right_bottom[0], body_right_bottom[1], body_right_bottom[2])
         # Guide rod bearing top (abbr. tbl = top bearing left, bbl = bottom bearing left, etc.)
         tbl_mid_top_attach = (body_left_top[0], body_left_top[1] - offset / 3, body_left_top[2] + (offset / 2))
-        tbl_left_top_attach = (tbl_mid_top_attach[0], tbl_mid_top_attach[1] - offset / 2, tbl_mid_top_attach[2] - offset / 2)
+        tbl_left_top_attach = (tbl_mid_top_attach[0], tbl_mid_top_attach[1] - offset / 2, tbl_mid_top_attach[2] - offset / 3)
+        tbl_left_one_top_attach = (tbl_mid_top_attach[0], tbl_left_top_attach[1] + offset / 2.5, tbl_left_top_attach[2] + offset / 5)
+        tbl_left_two_top_attach = (tbl_mid_top_attach[0], tbl_left_top_attach[1] + offset / 5, tbl_left_top_attach[2] + offset / 15)
+        body_left_top_mid_back_anchor = (tbl_left_top_attach[0], tbl_left_top_attach[1], body_left_top[2])
+        tbl_right_top_attach = (tbl_mid_top_attach[0], tbl_mid_top_attach[1] - offset / 2, tbl_mid_top_attach[2] + offset / 3)
+        tbl_right_one_top_attach = (tbl_mid_top_attach[0], tbl_right_top_attach[1] + offset / 2.5, tbl_right_top_attach[2] - offset / 5)
+        tbl_right_two_top_attach = (tbl_mid_top_attach[0], tbl_right_top_attach[1] + offset / 5, tbl_right_top_attach[2] - offset / 15)
+        body_right_top_mid_back_anchor = (tbl_left_top_attach[0], tbl_right_top_attach[1], box_left_top_back[2])
+
+
 
 
         vertices = (
@@ -328,7 +337,14 @@ class PrinterHead:
             body_right_mid_top_anchor,  # 14
             body_right_mid_bottom_anchor,  # 15
             tbl_mid_top_attach,  # 16
-            tbl_left_top_attach,  # 17
+            tbl_left_one_top_attach,  # 17
+            tbl_left_two_top_attach,  # 18
+            tbl_left_top_attach,  # 19
+            body_left_top_mid_back_anchor,  # 20
+            tbl_right_one_top_attach,  # 21
+            tbl_right_two_top_attach,  # 22
+            tbl_right_top_attach,  # 23
+            body_right_top_mid_back_anchor,  # 24
         )
 
         edges = (
@@ -340,9 +356,19 @@ class PrinterHead:
             (4, 6),
             (5, 7),
             (6, 7),
-            (8, 16),
-            (16, 17)
-
+            #(8, 16), using a simplified version of the carriabe block for now, bearings seemed too busy
+            #(16, 17),
+            #(4, 17),
+            #(17, 18),
+            #(4, 18),
+            #(18, 19),
+            #(19, 20),
+            #(16, 21),
+            #(0, 21),
+            #(21, 22),
+            #(0, 22),
+            #(22, 23),
+            #(23, 24)
         )
 
         return vertices, edges
