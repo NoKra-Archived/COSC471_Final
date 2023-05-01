@@ -73,11 +73,17 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glRotatef(1, 3, 1, 1)
         Cube()
-        UI.drawUIText(
-            0, 0, 16, h, w, "Frame " + frame.__str__() + ". Head Speed: 0 m/s. Extrusion Speed: 0 m/s. Extruded Length: 100 m.")
+        t1w, t1h = UI.drawUIText(
+            w/2, h - 30, 16, h, w, "Frame " + frame.__str__())
+        t2w, t2h = UI.drawUIText(
+            w/2, h - (30 + t1h), 16, h, w, "Head Speed: 0 m/s.")
+        t3w, t3h = UI.drawUIText(
+            w/2, h - (30 + t1h + t2h), 16, h, w, "Extrusion Speed: 0 m/s.")
+        t4w, t4h = UI.drawUIText(
+            w/2, h - (30 + t1h + t2h + t3h), 16, h, w, "Extruded Length: 100 m.")
         pygame.display.flip()
         frame += 1
-        pygame.time.wait(1000)
+        pygame.time.wait(10)
 
 
 main()
