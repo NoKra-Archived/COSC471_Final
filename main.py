@@ -1,3 +1,4 @@
+import numpy
 import pygame
 from pygame.locals import *
 
@@ -41,23 +42,30 @@ def Cube():
 
 def main():
     pygame.init()
-    display = (800, 600)
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    pygame.display.set_mode((0, 0), flags=DOUBLEBUF | OPENGL | RESIZABLE)
 
-    gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+    displayInfo = pygame.display.Info()
 
-    glTranslatef(0.0, 0.0, -5)
+    gluPerspective(45, ((displayInfo.current_w) /
+                        (displayInfo.current_h - 30)), 0.1, 50.0)
 
+    initialTranslate = True
+    frame = 0
     while True:
+        print("Frame " + frame.__str__())
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
+        if initialTranslate:
+            glTranslatef(0.0, 0.0, -5)
+            initialTranslate = False
         glRotatef(1, 3, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         Cube()
         pygame.display.flip()
+        frame += 1
         pygame.time.wait(10)
 
 
