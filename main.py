@@ -50,7 +50,7 @@ def main():
     w, h = display.get_size()
     while True:
         print("Frame " + frame.__str__())
-        glViewport(0, int(h / 2), int(w / 2),
+        glViewport(0, int(h / 4), int(w / 2),
                    int((h / 2) - 30))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -74,10 +74,10 @@ def main():
         glRotatef(1, 3, 1, 1)
         Cube()
         UI.drawUIText(
-            0, 0, "Head Speed: 0 m/s. Extrusion Speed: 0 m/s. Extruded Length: 100 m.")
+            0, 0, 16, h, w, "Frame " + frame.__str__() + ". Head Speed: 0 m/s. Extrusion Speed: 0 m/s. Extruded Length: 100 m.")
         pygame.display.flip()
         frame += 1
-        pygame.time.wait(100)
+        pygame.time.wait(1000)
 
 
 main()
