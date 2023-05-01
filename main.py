@@ -1,4 +1,5 @@
 import numpy
+import UI
 import pygame
 from pygame.locals import *
 
@@ -42,31 +43,41 @@ def Cube():
 
 def main():
     pygame.init()
-    pygame.display.set_mode((0, 0), flags=DOUBLEBUF | OPENGL | RESIZABLE)
+    display = pygame.display.set_mode(
+        (0, 0), flags=DOUBLEBUF | OPENGL | RESIZABLE)
 
-    displayInfo = pygame.display.Info()
-
-    gluPerspective(45, ((displayInfo.current_w) /
-                        (displayInfo.current_h - 30)), 0.1, 50.0)
-
-    initialTranslate = True
     frame = 0
+    w, h = display.get_size()
     while True:
         print("Frame " + frame.__str__())
+        glViewport(0, int(h / 2), int(w / 2),
+                   int((h / 2) - 30))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            elif event.type == VIDEOEXPOSE:
+                print("Exposed!")
+            elif event.type == VIDEORESIZE:
+                print("Resized!")
+                glLoadIdentity()
+                try:
+                    w, h = event.dict['size']
+                except:
+                    print("Failed to find event.dict['size']")
+                    w, h = display.get_size()
+                gluPerspective(45, (w / (h - 30)), 0.1, 50.0)
+                glTranslatef(0.0, 0.0, -5)
 
-        if initialTranslate:
-            glTranslatef(0.0, 0.0, -5)
-            initialTranslate = False
-        glRotatef(1, 3, 1, 1)
+        print("Screen: w = " + w.__str__() + ", h = " + h.__str__())
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glRotatef(1, 3, 1, 1)
         Cube()
+        UI.drawUIText(
+            0, 0, "Head Speed: 0 m/s. Extrusion Speed: 0 m/s. Extruded Length: 100 m.")
         pygame.display.flip()
         frame += 1
-        pygame.time.wait(10)
+        pygame.time.wait(100)
 
 
 main()
