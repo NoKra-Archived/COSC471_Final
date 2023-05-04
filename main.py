@@ -4,10 +4,17 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 from head import PrinterHead
+from rail_horizontal import HorizontalRail
+from rail_vertical import VerticalRail
+from plate import Plate
 
-def Cube():
+
+dimensions = 5
+
+
+def build_printer_head(scale, current_x, current_y):
     glBegin(GL_LINES)
-    head = PrinterHead(1, 5, 5)
+    head = PrinterHead(scale, current_x, current_y)
     for part in head.all_parts:
         for edge in part[1]:
             for vertex in edge:
@@ -15,20 +22,54 @@ def Cube():
 
     glEnd()
 
+def build_horizontal_rail(scale, current_y):
+    glBegin(GL_LINES)
+    horizontal_rail = HorizontalRail(scale, current_y)
+    for part in horizontal_rail.all_parts:
+        for edge in part[1]:
+            for vertex in edge:
+                glVertex3fv(part[0][vertex])
+
+    glEnd()
+
+
+def build_vertical_rail(scale):
+    glBegin(GL_LINES)
+    vertical_rail = VerticalRail(scale)
+    for part in vertical_rail.all_parts:
+        for edge in part[1]:
+            for vertex in edge:
+                glVertex3fv(part[0][vertex])
+
+    glEnd()
+
+
+def build_plate(scale, current_z):
+    glBegin(GL_LINES)
+    plate = Plate(scale, current_z)
+    for part in plate.all_parts:
+        for edge in part[1]:
+            for vertex in edge:
+                glVertex3fv(part[0][vertex])
+
+    glEnd()
 
 def main():
     pygame.init()
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    z_tran_start = -15.0
+    z_tran_start = -50.0
     y_tran_start = 0.5
-    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
+    gluPerspective(45, (display[0]/display[1]), 0.1, 100.0)
     glTranslatef(0.0, y_tran_start, z_tran_start)
 
     x_rot_current = 0
     y_rot_current = 0
 
+    x_position = 0
+    y_position = 0
+    z_position = 0
 
     z_tran_current = z_tran_start
     y_tran_current = y_tran_start
@@ -47,6 +88,24 @@ def main():
                     glTranslatef(0.0, y_tran_start, z_tran_start)
                     x_rot_current = 0
                     y_rot_current = 0
+                if event.key == pygame.K_j:
+                    x_position -= 1
+                if event.key == pygame.K_k:
+                    x_position += 1
+                if event.key == pygame.K_o:
+                    y_position -= 1
+                if event.key == pygame.K_p:
+                    y_position += 1
+                if event.key == pygame.K_n:
+                    z_position -= 1
+                if event.key == pygame.K_m:
+                    z_position += 1
+                if event.key == pygame.K_z: # resets x and y positions
+                    x_position = 0
+                    y_position = 0
+                    z_position = 0
+
+
             # Handles zoom in and zoom out (for now, only works when y rotation is 0)
             if event.type == pygame.MOUSEWHEEL:
                 abs_x_rot = abs(x_rot_current)
@@ -116,7 +175,11 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-        Cube()
+        build_printer_head(dimensions, x_position, y_position)
+        build_horizontal_rail(dimensions, y_position)
+        build_vertical_rail(dimensions)
+        build_plate(dimensions, z_position)
+
         pygame.display.flip()
         pygame.time.wait(10)
 
