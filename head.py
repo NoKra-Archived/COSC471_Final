@@ -2,10 +2,12 @@
 # instead of hard-coding the sizes and connections, using classes to build the printer parts
 # probably best to have head_height and head_length be even in size
 class PrinterHead:
-    def __init__(self, head_width, head_height, head_length):
-        self.head_width = head_width
-        self.head_height = head_height / 2
-        self.head_length = head_length / 2
+    def __init__(self, dimension, current_x, current_y):
+        self.current_x = current_x
+        self.current_y = current_y
+        self.head_width = dimension / 5
+        self.head_height = dimension / 2
+        self.head_length = dimension / 2
         self.main_box = self.__create_main_box()
         self.fan_box = self.__create_fan_box()
         self.nozzle = self.__create_nozzle()
@@ -13,23 +15,24 @@ class PrinterHead:
         self.all_parts = (self.main_box, self.fan_box, self.nozzle, self.carriage_block)
 
     def __create_main_box(self):
+        right_bottom_back = (self.head_width + self.current_x, -self.head_height + self.current_y, -self.head_length)
+        right_top_back = (self.head_width + self.current_x, self.head_height + self.current_y, -self.head_length)
+        left_top_back = (-self.head_width + self.current_x, self.head_height + self.current_y, -self.head_length)
+        left_bottom_back = (-self.head_width + self.current_x, -self.head_height + self.current_y, -self.head_length)
+        right_bottom_front = (self.head_width + self.current_x, -self.head_height + self.current_y, self.head_length)
+        right_top_front = (self.head_width + self.current_x, self.head_height + self.current_y, self.head_length)
+        left_bottom_front = (-self.head_width + self.current_x, -self.head_height + self.current_y, self.head_length)
+        left_top_front = (-self.head_width + self.current_x, self.head_height + self.current_y, self.head_length)
+
         vertices = (
-            # right bottom back 0
-            (self.head_width, -self.head_height, -self.head_length),
-            # right top back 1
-            (self.head_width, self.head_height, -self.head_length),
-            # left top back 2
-            (-self.head_width, self.head_height, -self.head_length),
-            # left bottom back 3
-            (-self.head_width, -self.head_height, -self.head_length),
-            # right bottom front 4
-            (self.head_width, -self.head_height, self.head_length),
-            # right top front 5
-            (self.head_width, self.head_height, self.head_length),
-            # left bottom front 6
-            (-self.head_width, -self.head_height, self.head_length),
-            # left top front 7
-            (-self.head_width, self.head_height, self.head_length)
+            right_bottom_back,  # 0
+            right_top_back,  # 1
+            left_top_back,  # 2
+            left_bottom_back,  # 3
+            right_bottom_front,  # 4
+            right_top_front,  # 5
+            left_bottom_front,  # 6
+            left_top_front  # 7
         )
 
         edges = (
@@ -109,10 +112,10 @@ class PrinterHead:
         box_left_back = self.main_box[0][3]
         box_right_back = self.main_box[0][0]
         # Stem attachment points
-        left_front_attach = (box_left_front[0] / 2, box_left_front[1], box_left_front[2] - offset)
-        right_front_attach = (box_right_front[0] / 2, box_right_front[1], box_right_front[2] - offset)
-        left_back_attach = (box_left_back[0] / 2, box_left_back[1], left_front_attach[2] - offset)
-        right_back_attach = (box_right_back[0] / 2, box_right_back[1], right_front_attach[2] - offset)
+        left_front_attach = (box_left_front[0] + (offset * .6), box_left_front[1], box_left_front[2] - offset)
+        right_front_attach = (box_right_front[0] - (offset * .6), box_right_front[1], box_right_front[2] - offset)
+        left_back_attach = (box_left_back[0] + (offset * .6), box_left_back[1], left_front_attach[2] - offset)
+        right_back_attach = (box_right_back[0] - (offset * .6), box_right_back[1], right_front_attach[2] - offset)
         # Stem length points
         left_front_stem = (left_front_attach[0], left_front_attach[1] - (offset / 2), left_front_attach[2])
         right_front_stem = (right_front_attach[0], right_front_attach[1] - (offset / 2), right_front_attach[2])
@@ -133,27 +136,27 @@ class PrinterHead:
         # Nozzle attachment points (y coordinates are temporary, may do some linear interpolation)
         left_front_nozzle_top = (left_front_sink_bottom[0] + (offset / 2), left_front_sink_bottom[1] - offset / 3, left_front_sink_bottom[2] - (offset / 2))
         right_front_nozzle_top = (right_front_sink_bottom[0] - (offset / 2), right_front_sink_bottom[1] - offset / 3, right_front_sink_bottom[2] - (offset / 2))
-        mid_front_nozzle_top = (0, left_front_sink_bottom[1] - offset / 3, left_front_nozzle_top[2] + (offset / 4))
-        mid_front_sink_attach = (0, left_front_sink_bottom[1], left_front_sink_bottom[2])
+        mid_front_nozzle_top = (0 + self.current_x, left_front_sink_bottom[1] - offset / 3, left_front_nozzle_top[2] + (offset / 4))
+        mid_front_sink_attach = (0 + self.current_x, left_front_sink_bottom[1], left_front_sink_bottom[2])
         left_back_nozzle_top = (left_front_nozzle_top[0], left_front_nozzle_top[1], left_front_nozzle_top[2] - (offset / 2))
         right_back_nozzle_top = (right_front_nozzle_top[0], right_front_nozzle_top[1], right_front_nozzle_top[2] - (offset / 2))
-        mid_back_nozzle_top = (0, left_front_nozzle_top[1], left_back_nozzle_top[2] - (offset / 4))
-        mid_back_sink_attach = (0, left_mid_sink_bottom[1], left_mid_sink_bottom[2])
+        mid_back_nozzle_top = (0 + self.current_x, left_front_nozzle_top[1], left_back_nozzle_top[2] - (offset / 4))
+        mid_back_sink_attach = (0 + self.current_x, left_mid_sink_bottom[1], left_mid_sink_bottom[2])
         # Nozzle body points
         left_front_nozzle_bottom = (left_front_nozzle_top[0], left_front_nozzle_top[1] - (offset / 2), left_front_nozzle_top[2])
         right_front_nozzle_bottom = (right_front_nozzle_top[0], right_front_nozzle_top[1] - (offset / 2), right_front_nozzle_top[2])
-        mid_front_nozzle_bottom = (0, mid_back_nozzle_top[1] - (offset / 2), mid_front_nozzle_top[2])
+        mid_front_nozzle_bottom = (0 + self.current_x, mid_back_nozzle_top[1] - (offset / 2), mid_front_nozzle_top[2])
         left_back_nozzle_bottom = (left_back_nozzle_top[0], left_back_nozzle_top[1] - (offset / 2), left_back_nozzle_top[2])
         right_back_nozzle_bottom = (right_back_nozzle_top[0], right_back_nozzle_top[1] - (offset / 2), right_back_nozzle_top[2])
-        mid_back_nozzle_bottom = (0, mid_back_nozzle_top[1] - (offset / 2), mid_back_nozzle_top[2])
+        mid_back_nozzle_bottom = (0 + self.current_x, mid_back_nozzle_top[1] - (offset / 2), mid_back_nozzle_top[2])
         # Nozzle tip points
         left_front_tip_attach = (left_front_nozzle_bottom[0] + (offset / 6), left_front_nozzle_bottom[1], left_front_nozzle_bottom[2] - (offset / 6))
         right_front_tip_attach = (right_front_nozzle_bottom[0] - (offset / 6), right_front_nozzle_bottom[1], right_front_nozzle_bottom[2] - (offset / 6))
-        mid_front_tip_attach = (0, mid_front_nozzle_bottom[1], mid_front_nozzle_bottom[2] - (offset / 6))
+        mid_front_tip_attach = (0 + self.current_x, mid_front_nozzle_bottom[1], mid_front_nozzle_bottom[2] - (offset / 6))
         left_back_tip_attach = (left_back_nozzle_bottom[0] + (offset / 6), left_back_nozzle_bottom[1], left_back_nozzle_bottom[2] + (offset / 6))
         right_back_tip_attach = (right_back_nozzle_bottom[0] - (offset / 6), right_back_nozzle_bottom[1], right_back_nozzle_bottom[2] + (offset / 6))
-        mid_back_tip_attach = (0, mid_back_nozzle_bottom[1], mid_back_nozzle_bottom[2] + (offset / 6))
-        nozzle_tip = (0, mid_front_tip_attach[1] - (offset / 3), left_front_nozzle_bottom[2] - (offset / 4))
+        mid_back_tip_attach = (0 + self.current_x, mid_back_nozzle_bottom[1], mid_back_nozzle_bottom[2] + (offset / 6))
+        nozzle_tip = (0 + self.current_x, mid_front_tip_attach[1] - (offset / 3), left_front_nozzle_bottom[2] - (offset / 4))
 
         vertices = (
             box_left_front,  # 0
