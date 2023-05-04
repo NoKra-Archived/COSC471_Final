@@ -3,70 +3,22 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from head import PrinterHead
-from rail_horizontal import HorizontalRail
-from rail_vertical import VerticalRail
-from plate import Plate
-
-
-dimensions = 5
-
-
-def build_printer_head(scale, current_x, current_y):
-    glBegin(GL_LINES)
-    head = PrinterHead(scale, current_x, current_y)
-    for part in head.all_parts:
-        for edge in part[1]:
-            for vertex in edge:
-                glVertex3fv(part[0][vertex])
-
-    glEnd()
-
-def build_horizontal_rail(scale, current_y):
-    glBegin(GL_LINES)
-    horizontal_rail = HorizontalRail(scale, current_y)
-    for part in horizontal_rail.all_parts:
-        for edge in part[1]:
-            for vertex in edge:
-                glVertex3fv(part[0][vertex])
-
-    glEnd()
-
-
-def build_vertical_rail(scale):
-    glBegin(GL_LINES)
-    vertical_rail = VerticalRail(scale)
-    for part in vertical_rail.all_parts:
-        for edge in part[1]:
-            for vertex in edge:
-                glVertex3fv(part[0][vertex])
-
-    glEnd()
-
-
-def build_plate(scale, current_z):
-    glBegin(GL_LINES)
-    plate = Plate(scale, current_z)
-    for part in plate.all_parts:
-        for edge in part[1]:
-            for vertex in edge:
-                glVertex3fv(part[0][vertex])
-
-    glEnd()
+from printer import Printer
 
 def main():
     pygame.init()
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    z_tran_start = -50.0
+    z_tran_start = -1000.0
     y_tran_start = 0.5
-    gluPerspective(45, (display[0]/display[1]), 0.1, 100.0)
+    gluPerspective(45, (display[0]/display[1]), 0.1, 3000.0)
     glTranslatef(0.0, y_tran_start, z_tran_start)
 
     x_rot_current = 0
     y_rot_current = 0
 
+    printer = Printer()
     x_position = 0
     y_position = 0
     z_position = 0
@@ -84,7 +36,7 @@ def main():
                 # Resets the camera to it's origin
                 if event.key == pygame.K_x:
                     glLoadIdentity()
-                    gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                    gluPerspective(45, (display[0] / display[1]), 0.1, 3000.0)
                     glTranslatef(0.0, y_tran_start, z_tran_start)
                     x_rot_current = 0
                     y_rot_current = 0
@@ -104,6 +56,8 @@ def main():
                     x_position = 0
                     y_position = 0
                     z_position = 0
+                print("X: %d | Y: %d | Z: %d" % (x_position, y_position, z_position))
+
 
 
             # Handles zoom in and zoom out (for now, only works when y rotation is 0)
@@ -111,7 +65,7 @@ def main():
                 abs_x_rot = abs(x_rot_current)
                 if 0 <= abs_x_rot <= 89 or 181 <= abs_x_rot <= 269:
                     modded_x = abs_x_rot % 90
-                    quadrant = 1 if abs_x_rot <= 90 else -1
+                    quadrant = 20 if abs_x_rot <= 90 else -20
                     if event.y == -1:
                         glTranslatef(quadrant * (modded_x / 90), 0, quadrant * (-(90 - modded_x) / 90))
                     if event.y == 1:
@@ -175,10 +129,7 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-        build_printer_head(dimensions, x_position, y_position)
-        build_horizontal_rail(dimensions, y_position)
-        build_vertical_rail(dimensions)
-        build_plate(dimensions, z_position)
+        printer.update_printer(x_position, y_position, z_position)
 
         pygame.display.flip()
         pygame.time.wait(10)
