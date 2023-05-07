@@ -1,20 +1,27 @@
 class Plate:
-    def __init__(self, dimension, current_z):
-        self.dimension = dimension
-        self.current_z = current_z
-        self.y_height = dimension * 4.5
+    def __init__(self, dimension, x_offset, bed_level, current_z):
+        self.__dimension = dimension
+        self.__x_offset = x_offset
+        self.__current_z = current_z
+        self.__bed_level = bed_level
 
-        self.plate = self.__create_plate()
-        self.sled = self.__create_sled()
-        self.all_parts = (self.plate, self.sled)
+        self.__plate = self.__create_plate()
+        self.__sled = self.__create_sled()
+        self.all_parts = (self.__plate, self.__sled)
+
+    def get_x_zero(self):
+        return self.__plate[0][1][0]
+
+    def get_z_zero(self):
+        return self.__plate[0][1][2]
 
     def __create_plate(self):
-        plate_dimension = self.dimension * 2.4
+        plate_dimension = self.__dimension * 2.4
 
-        front_right = (0, -self.y_height, plate_dimension + self.current_z)
-        front_left = (- plate_dimension * 2, - self.y_height, plate_dimension + self.current_z)
-        back_right = (0, - self.y_height, - plate_dimension + self.current_z)
-        back_left = (- plate_dimension * 2, -self.y_height, - plate_dimension + self.current_z)
+        front_right = (0 + self.__x_offset, self.__bed_level, plate_dimension + self.__current_z)
+        front_left = (- plate_dimension * 2 + self.__x_offset, self.__bed_level, plate_dimension + self.__current_z)
+        back_right = (0 + self.__x_offset, self.__bed_level, - plate_dimension + self.__current_z)
+        back_left = (- plate_dimension * 2 + self.__x_offset, self.__bed_level, - plate_dimension + self.__current_z)
 
         vertices = (
             front_right,  # 0

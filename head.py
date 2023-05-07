@@ -2,27 +2,33 @@
 # instead of hard-coding the sizes and connections, using classes to build the printer parts
 # probably best to have head_height and head_length be even in size
 class PrinterHead:
-    def __init__(self, dimension, current_x, current_y):
-        self.current_x = current_x
-        self.current_y = current_y
-        self.head_width = dimension / 5
-        self.head_height = dimension / 2
-        self.head_length = dimension / 2
-        self.main_box = self.__create_main_box()
-        self.fan_box = self.__create_fan_box()
-        self.nozzle = self.__create_nozzle()
-        self.carriage_block = self.__create_carriage_block()
-        self.all_parts = (self.main_box, self.fan_box, self.nozzle, self.carriage_block)
+    def __init__(self, dimension, x_offset, current_x, current_y):
+        self.__x_offset = x_offset
+        self.__current_x = current_x
+        self.__current_y = current_y
+
+        self.__head_width = dimension / 5
+        self.__head_height = dimension / 2
+        self.__head_length = dimension / 2
+
+        self.__main_box = self.__create_main_box()
+        self.__fan_box = self.__create_fan_box()
+        self.__nozzle = self.__create_nozzle()
+        self.__carriage_block = self.__create_carriage_block()
+        self.all_parts = (self.__main_box, self.__fan_box, self.__nozzle, self.__carriage_block)
+
+    def get_nozzle_position(self):
+        return self.__nozzle[0][42]
 
     def __create_main_box(self):
-        right_bottom_back = (self.head_width + self.current_x, -self.head_height + self.current_y, -self.head_length)
-        right_top_back = (self.head_width + self.current_x, self.head_height + self.current_y, -self.head_length)
-        left_top_back = (-self.head_width + self.current_x, self.head_height + self.current_y, -self.head_length)
-        left_bottom_back = (-self.head_width + self.current_x, -self.head_height + self.current_y, -self.head_length)
-        right_bottom_front = (self.head_width + self.current_x, -self.head_height + self.current_y, self.head_length)
-        right_top_front = (self.head_width + self.current_x, self.head_height + self.current_y, self.head_length)
-        left_bottom_front = (-self.head_width + self.current_x, -self.head_height + self.current_y, self.head_length)
-        left_top_front = (-self.head_width + self.current_x, self.head_height + self.current_y, self.head_length)
+        right_bottom_back = (self.__head_width + self.__current_x + self.__x_offset, -self.__head_height + self.__current_y, -self.__head_length)
+        right_top_back = (self.__head_width + self.__current_x + self.__x_offset, self.__head_height + self.__current_y, -self.__head_length)
+        left_top_back = (-self.__head_width + self.__current_x + self.__x_offset, self.__head_height + self.__current_y, -self.__head_length)
+        left_bottom_back = (-self.__head_width + self.__current_x + self.__x_offset, -self.__head_height + self.__current_y, -self.__head_length)
+        right_bottom_front = (self.__head_width + self.__current_x + self.__x_offset, -self.__head_height + self.__current_y, self.__head_length)
+        right_top_front = (self.__head_width + self.__current_x + self.__x_offset, self.__head_height + self.__current_y, self.__head_length)
+        left_bottom_front = (-self.__head_width + self.__current_x + self.__x_offset, -self.__head_height + self.__current_y, self.__head_length)
+        left_top_front = (-self.__head_width + self.__current_x + self.__x_offset, self.__head_height + self.__current_y, self.__head_length)
 
         vertices = (
             right_bottom_back,  # 0
@@ -52,12 +58,12 @@ class PrinterHead:
         return vertices, edges
 
     def __create_fan_box(self):
-        offset = self.head_height / 2.5 # Used for constant distance measurements
+        offset = self.__head_height / 2.5 # Used for constant distance measurements
         # Box attachment points
-        box_left_bottom_front = self.main_box[0][6]
-        box_left_top_front = self.main_box[0][7]
-        box_left_bottom_back = self.main_box[0][3]
-        box_left_top_back = self.main_box[0][2]
+        box_left_bottom_front = self.__main_box[0][6]
+        box_left_top_front = self.__main_box[0][7]
+        box_left_bottom_back = self.__main_box[0][3]
+        box_left_top_back = self.__main_box[0][2]
         # Fan attachment points
         bottom_front_connection = (box_left_bottom_front[0], box_left_bottom_front[1] + offset, box_left_bottom_front[2] - offset)
         top_front_connection = (box_left_top_front[0], box_left_top_front[1] - offset, box_left_top_front[2] - offset)
@@ -105,12 +111,12 @@ class PrinterHead:
         return vertices, edges
 
     def __create_nozzle(self):
-        offset = self.head_length / 2.5
+        offset = self.__head_length / 2.5
         # Box attachment points
-        box_left_front = self.main_box[0][6]
-        box_right_front = self.main_box[0][4]
-        box_left_back = self.main_box[0][3]
-        box_right_back = self.main_box[0][0]
+        box_left_front = self.__main_box[0][6]
+        box_right_front = self.__main_box[0][4]
+        box_left_back = self.__main_box[0][3]
+        box_right_back = self.__main_box[0][0]
         # Stem attachment points
         left_front_attach = (box_left_front[0] + (offset * .6), box_left_front[1], box_left_front[2] - offset)
         right_front_attach = (box_right_front[0] - (offset * .6), box_right_front[1], box_right_front[2] - offset)
@@ -136,27 +142,27 @@ class PrinterHead:
         # Nozzle attachment points (y coordinates are temporary, may do some linear interpolation)
         left_front_nozzle_top = (left_front_sink_bottom[0] + (offset / 2), left_front_sink_bottom[1] - offset / 3, left_front_sink_bottom[2] - (offset / 2))
         right_front_nozzle_top = (right_front_sink_bottom[0] - (offset / 2), right_front_sink_bottom[1] - offset / 3, right_front_sink_bottom[2] - (offset / 2))
-        mid_front_nozzle_top = (0 + self.current_x, left_front_sink_bottom[1] - offset / 3, left_front_nozzle_top[2] + (offset / 4))
-        mid_front_sink_attach = (0 + self.current_x, left_front_sink_bottom[1], left_front_sink_bottom[2])
+        mid_front_nozzle_top = (0 + self.__current_x + self.__x_offset, left_front_sink_bottom[1] - offset / 3, left_front_nozzle_top[2] + (offset / 4))
+        mid_front_sink_attach = (0 + self.__current_x + self.__x_offset, left_front_sink_bottom[1], left_front_sink_bottom[2])
         left_back_nozzle_top = (left_front_nozzle_top[0], left_front_nozzle_top[1], left_front_nozzle_top[2] - (offset / 2))
         right_back_nozzle_top = (right_front_nozzle_top[0], right_front_nozzle_top[1], right_front_nozzle_top[2] - (offset / 2))
-        mid_back_nozzle_top = (0 + self.current_x, left_front_nozzle_top[1], left_back_nozzle_top[2] - (offset / 4))
-        mid_back_sink_attach = (0 + self.current_x, left_mid_sink_bottom[1], left_mid_sink_bottom[2])
+        mid_back_nozzle_top = (0 + self.__current_x + self.__x_offset, left_front_nozzle_top[1], left_back_nozzle_top[2] - (offset / 4))
+        mid_back_sink_attach = (0 + self.__current_x + self.__x_offset, left_mid_sink_bottom[1], left_mid_sink_bottom[2])
         # Nozzle body points
         left_front_nozzle_bottom = (left_front_nozzle_top[0], left_front_nozzle_top[1] - (offset / 2), left_front_nozzle_top[2])
         right_front_nozzle_bottom = (right_front_nozzle_top[0], right_front_nozzle_top[1] - (offset / 2), right_front_nozzle_top[2])
-        mid_front_nozzle_bottom = (0 + self.current_x, mid_back_nozzle_top[1] - (offset / 2), mid_front_nozzle_top[2])
+        mid_front_nozzle_bottom = (0 + self.__current_x + self.__x_offset, mid_back_nozzle_top[1] - (offset / 2), mid_front_nozzle_top[2])
         left_back_nozzle_bottom = (left_back_nozzle_top[0], left_back_nozzle_top[1] - (offset / 2), left_back_nozzle_top[2])
         right_back_nozzle_bottom = (right_back_nozzle_top[0], right_back_nozzle_top[1] - (offset / 2), right_back_nozzle_top[2])
-        mid_back_nozzle_bottom = (0 + self.current_x, mid_back_nozzle_top[1] - (offset / 2), mid_back_nozzle_top[2])
+        mid_back_nozzle_bottom = (0 + self.__current_x + self.__x_offset, mid_back_nozzle_top[1] - (offset / 2), mid_back_nozzle_top[2])
         # Nozzle tip points
         left_front_tip_attach = (left_front_nozzle_bottom[0] + (offset / 6), left_front_nozzle_bottom[1], left_front_nozzle_bottom[2] - (offset / 6))
         right_front_tip_attach = (right_front_nozzle_bottom[0] - (offset / 6), right_front_nozzle_bottom[1], right_front_nozzle_bottom[2] - (offset / 6))
-        mid_front_tip_attach = (0 + self.current_x, mid_front_nozzle_bottom[1], mid_front_nozzle_bottom[2] - (offset / 6))
+        mid_front_tip_attach = (0 + self.__current_x + self.__x_offset, mid_front_nozzle_bottom[1], mid_front_nozzle_bottom[2] - (offset / 6))
         left_back_tip_attach = (left_back_nozzle_bottom[0] + (offset / 6), left_back_nozzle_bottom[1], left_back_nozzle_bottom[2] + (offset / 6))
         right_back_tip_attach = (right_back_nozzle_bottom[0] - (offset / 6), right_back_nozzle_bottom[1], right_back_nozzle_bottom[2] + (offset / 6))
-        mid_back_tip_attach = (0 + self.current_x, mid_back_nozzle_bottom[1], mid_back_nozzle_bottom[2] + (offset / 6))
-        nozzle_tip = (0 + self.current_x, mid_front_tip_attach[1] - (offset / 3), left_front_nozzle_bottom[2] - (offset / 4))
+        mid_back_tip_attach = (0 + self.__current_x + self.__x_offset, mid_back_nozzle_bottom[1], mid_back_nozzle_bottom[2] + (offset / 6))
+        nozzle_tip = (0 + self.__current_x + self.__x_offset, mid_front_tip_attach[1] - (offset / 3), left_front_nozzle_bottom[2] - (offset / 4))
 
         vertices = (
             box_left_front,  # 0
@@ -288,12 +294,12 @@ class PrinterHead:
 
 
     def __create_carriage_block(self):
-        offset = self.head_length / 1.5
+        offset = self.__head_length / 1.5
         # Box attachment points
-        box_left_top_back = self.main_box[0][2]
-        box_right_top_back = self.main_box[0][1]
-        box_left_bottom_back = self.main_box[0][3]
-        box_right_bottom_back = self.main_box[0][0]
+        box_left_top_back = self.__main_box[0][2]
+        box_right_top_back = self.__main_box[0][1]
+        box_left_bottom_back = self.__main_box[0][3]
+        box_right_bottom_back = self.__main_box[0][0]
         # Carriage body
         body_left_top = (box_left_top_back[0], box_left_top_back[1], box_left_top_back[2] - offset)
         body_mid_left_top_anchor = (box_left_top_back[0], box_left_top_back[1], box_left_top_back[2] - offset / 2)
