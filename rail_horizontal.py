@@ -1,28 +1,30 @@
 
 class HorizontalRail:
-    def __init__(self, dimension, current_y):
-        self.dimension = dimension
-        self.current_y = current_y
-        self.z_offset = dimension / 2
-        self.x_offset = (dimension / 5) + (dimension / 8) # dimension / 8 is the gap size between the base
-        self.base_length = (dimension / 2) / 1.5
-        self.base_width = dimension * 0.8
-        self.base_height = dimension / 2
+    def __init__(self, dimension, x_offset, current_y):
+        self.__dimension = dimension
+        self.__x_offset = x_offset
+        self.__current_y = current_y
+        self.__z_offset = dimension / 2
+        self.__x_position = (dimension / 5) + (dimension / 8) # dimension / 8 is the gap size between the base
+        self.__base_length = (dimension / 2) / 1.5
+        self.__base_width = dimension * 0.8
+        self.__base_height = dimension / 2
+        self.__rail_length = self.__dimension * 5.5
 
-        self.horizontal_rail_base = self.__create_horizontal_rail_base()
-        self.vertical_rail_base = self.__create_vertical_rail_base()
-        self.horizontal_rail = self.__create_horizontal_rail()
-        self.all_parts = (self.horizontal_rail_base, self.vertical_rail_base, self.horizontal_rail)
+        self.__horizontal_rail_base = self.__create_horizontal_rail_base()
+        self.__vertical_rail_base = self.__create_vertical_rail_base()
+        self.__horizontal_rail = self.__create_horizontal_rail()
+        self.all_parts = (self.__horizontal_rail_base, self.__vertical_rail_base, self.__horizontal_rail)
 
     def __create_horizontal_rail_base(self):
-        left_bottom_back = (self.x_offset, -self.base_height + self.current_y, -self.z_offset - self.base_length)
-        right_bottom_back = (self.x_offset + self.base_width, -self.base_height + self.current_y, -self.z_offset - self.base_length)
-        left_bottom_front = (self.x_offset, - self.base_height + self.current_y, -self.z_offset)
-        right_bottom_front = (self.x_offset + self.base_width, - self.base_height + self.current_y, -self.z_offset)
-        left_top_back = (self.x_offset, self.base_height + self.current_y, -self.z_offset - self.base_length)
-        right_top_back = (self.x_offset + self.base_width, self.base_height + self.current_y, -self.z_offset - self.base_length)
-        left_top_front = (self.x_offset, self.base_height + self.current_y, -self.z_offset)
-        right_top_front = (self.x_offset + self.base_width, self.base_height + self.current_y, -self.z_offset)
+        left_bottom_back = (self.__x_position + self.__x_offset, -self.__base_height + self.__current_y, -self.__z_offset - self.__base_length)
+        right_bottom_back = (self.__x_position + self.__base_width + self.__x_offset, -self.__base_height + self.__current_y, -self.__z_offset - self.__base_length)
+        left_bottom_front = (self.__x_position + self.__x_offset, - self.__base_height + self.__current_y, -self.__z_offset)
+        right_bottom_front = (self.__x_position + self.__base_width + self.__x_offset, - self.__base_height + self.__current_y, -self.__z_offset)
+        left_top_back = (self.__x_position + self.__x_offset, self.__base_height + self.__current_y, -self.__z_offset - self.__base_length)
+        right_top_back = (self.__x_position + self.__base_width + self.__x_offset, self.__base_height + self.__current_y, -self.__z_offset - self.__base_length)
+        left_top_front = (self.__x_position + self.__x_offset, self.__base_height + self.__current_y, -self.__z_offset)
+        right_top_front = (self.__x_position + self.__base_width + self.__x_offset, self.__base_height + self.__current_y, -self.__z_offset)
 
         vertices = (
             left_bottom_back,  # 0
@@ -53,14 +55,14 @@ class HorizontalRail:
         return vertices, edges
 
     def __create_vertical_rail_base(self):
-        left_bottom_front = self.horizontal_rail_base[0][0]
-        right_bottom_front = self.horizontal_rail_base[0][1]
-        left_top_front = self.horizontal_rail_base[0][4]
-        right_top_front = self.horizontal_rail_base[0][5]
-        left_bottom_back = (left_bottom_front[0], left_bottom_front[1], left_bottom_front[2] - self.base_length)
-        right_bottom_back = (right_bottom_front[0], right_bottom_front[1], right_bottom_front[2] - self.base_length)
-        left_top_back = (left_top_front[0], left_top_front[1], left_top_front[2] - self.base_length)
-        right_top_back = (right_top_front[0], right_top_front[1], right_top_front[2] - self.base_length)
+        left_bottom_front = self.__horizontal_rail_base[0][0]
+        right_bottom_front = self.__horizontal_rail_base[0][1]
+        left_top_front = self.__horizontal_rail_base[0][4]
+        right_top_front = self.__horizontal_rail_base[0][5]
+        left_bottom_back = (left_bottom_front[0], left_bottom_front[1], left_bottom_front[2] - self.__base_length)
+        right_bottom_back = (right_bottom_front[0], right_bottom_front[1], right_bottom_front[2] - self.__base_length)
+        left_top_back = (left_top_front[0], left_top_front[1], left_top_front[2] - self.__base_length)
+        right_top_back = (right_top_front[0], right_top_front[1], right_top_front[2] - self.__base_length)
 
         vertices = (
             left_bottom_front,  # 0
@@ -87,13 +89,12 @@ class HorizontalRail:
         return vertices, edges
 
     def __create_horizontal_rail(self):
-        rail_offset = self.dimension * 0.1
-        rail_length = self.dimension * 5
-        cap_width = self.dimension * 0.4
-        base_left_bottom_back = self.horizontal_rail_base[0][0]
-        base_left_bottom_front = self.horizontal_rail_base[0][2]
-        base_left_top_back = self.horizontal_rail_base[0][4]
-        base_left_top_front = self.horizontal_rail_base[0][6]
+        rail_offset = self.__dimension * 0.1
+        cap_width = self.__dimension * 0.4
+        base_left_bottom_back = self.__horizontal_rail_base[0][0]
+        base_left_bottom_front = self.__horizontal_rail_base[0][2]
+        base_left_top_back = self.__horizontal_rail_base[0][4]
+        base_left_top_front = self.__horizontal_rail_base[0][6]
         # top rail attach
         top_attach_top_back = (base_left_top_back[0], base_left_top_back[1] - rail_offset, base_left_top_back[2] + rail_offset)
         top_attach_top_front = (base_left_top_front[0], base_left_top_front[1] - rail_offset, base_left_top_front[2] - rail_offset)
@@ -102,10 +103,10 @@ class HorizontalRail:
         base_top_front_attach = (base_left_top_front[0], base_left_top_front[1] - (rail_offset * 3.5), base_left_top_front[2])
         top_attach_bottom_front = (base_top_front_attach[0], base_top_front_attach[1] + rail_offset, base_top_front_attach[2] - rail_offset)
         # top rail body
-        top_end_top_back = (top_attach_top_back[0] - rail_length, top_attach_top_back[1], top_attach_top_back[2])
-        top_end_top_front = (top_attach_top_front[0] - rail_length, top_attach_top_front[1], top_attach_top_front[2])
-        top_end_bottom_back = (top_attach_bottom_back[0] - rail_length, top_attach_bottom_back[1], top_attach_bottom_back[2])
-        top_end_bottom_front = (top_attach_bottom_front[0] - rail_length, top_attach_bottom_front[1], top_attach_bottom_front[2])
+        top_end_top_back = (top_attach_top_back[0] - self.__rail_length, top_attach_top_back[1], top_attach_top_back[2])
+        top_end_top_front = (top_attach_top_front[0] - self.__rail_length, top_attach_top_front[1], top_attach_top_front[2])
+        top_end_bottom_back = (top_attach_bottom_back[0] - self.__rail_length, top_attach_bottom_back[1], top_attach_bottom_back[2])
+        top_end_bottom_front = (top_attach_bottom_front[0] - self.__rail_length, top_attach_bottom_front[1], top_attach_bottom_front[2])
         # bottom rail attach
         base_bottom_back_attach = (base_left_bottom_back[0], base_left_bottom_back[1] + (rail_offset * 3.5), base_left_bottom_back[2])
         base_bottom_front_attach = (base_left_bottom_front[0], base_left_bottom_front[1] + (rail_offset * 3.5), base_left_bottom_front[2])
@@ -114,15 +115,15 @@ class HorizontalRail:
         bottom_attach_top_back = (base_bottom_back_attach[0], base_bottom_back_attach[1] - rail_offset, base_bottom_back_attach[2] + rail_offset)
         bottom_attach_top_front = (base_bottom_front_attach[0], base_bottom_front_attach[1] - rail_offset, base_bottom_front_attach[2] - rail_offset)
         # bottom rail body
-        bottom_end_top_back = (bottom_attach_top_back[0] - rail_length, bottom_attach_top_back[1], bottom_attach_top_back[2])
-        bottom_end_top_front = (bottom_attach_top_front[0] - rail_length, bottom_attach_top_front[1], bottom_attach_top_front[2])
-        bottom_end_bottom_back = (bottom_attach_bottom_back[0] - rail_length, bottom_attach_bottom_back[1], bottom_attach_bottom_back[2])
-        bottom_end_bottom_front = (bottom_attach_bottom_front[0] - rail_length, bottom_attach_bottom_front[1], bottom_attach_bottom_front[2])
+        bottom_end_top_back = (bottom_attach_top_back[0] - self.__rail_length, bottom_attach_top_back[1], bottom_attach_top_back[2])
+        bottom_end_top_front = (bottom_attach_top_front[0] - self.__rail_length, bottom_attach_top_front[1], bottom_attach_top_front[2])
+        bottom_end_bottom_back = (bottom_attach_bottom_back[0] - self.__rail_length, bottom_attach_bottom_back[1], bottom_attach_bottom_back[2])
+        bottom_end_bottom_front = (bottom_attach_bottom_front[0] - self.__rail_length, bottom_attach_bottom_front[1], bottom_attach_bottom_front[2])
         # rail cap attach
-        cap_right_top_back = (base_left_top_back[0] - rail_length, base_left_top_back[1], base_left_top_back[2])
-        cap_right_top_front = (base_left_top_front[0] - rail_length, base_left_top_front[1], base_left_top_front[2])
-        cap_right_bottom_back = (base_left_bottom_back[0] - rail_length, base_left_bottom_back[1], base_left_bottom_back[2])
-        cap_right_bottom_front = (base_left_bottom_front[0] - rail_length, base_left_bottom_front[1], base_left_bottom_front[2])
+        cap_right_top_back = (base_left_top_back[0] - self.__rail_length, base_left_top_back[1], base_left_top_back[2])
+        cap_right_top_front = (base_left_top_front[0] - self.__rail_length, base_left_top_front[1], base_left_top_front[2])
+        cap_right_bottom_back = (base_left_bottom_back[0] - self.__rail_length, base_left_bottom_back[1], base_left_bottom_back[2])
+        cap_right_bottom_front = (base_left_bottom_front[0] - self.__rail_length, base_left_bottom_front[1], base_left_bottom_front[2])
         cap_attach_top_back = (cap_right_top_back[0], cap_right_top_back[1] - (rail_offset * 3.5), cap_right_top_back[2])
         cap_attach_top_front = (cap_right_top_front[0], cap_right_top_front[1] - (rail_offset * 3.5), cap_right_top_front[2])
         cap_attach_bottom_back = (cap_right_bottom_back[0], cap_right_bottom_back[1] + (rail_offset * 3.5), cap_right_bottom_back[2])
