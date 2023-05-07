@@ -1,5 +1,6 @@
 .idea
 .vscode
+sample_gcode.txt
 
 # Python-based gitignores:
 
