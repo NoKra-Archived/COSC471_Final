@@ -106,7 +106,7 @@ class Printer:
             z_difference -= 1
 
     def adjust_feed_rate(self, feed_rate):
-        mm_per_ms = int(feed_rate) / 60000.0
+        mm_per_ms = int(feed_rate) / 30000.0 # adjust the denominator for faster speeds (correct value is 60,000)
         self.__movement_rate = mm_per_ms * self.tick_rate
         print("New movement rate: %f" % self.__movement_rate)
 
@@ -118,7 +118,6 @@ class Printer:
             print("X: %d | Y: %d | Z: %d" % (self.__model_x_position, self.__model_y_position, self.__model_z_position))
 
     def update_printer_frame(self):
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         self.__build_printer_head()
         self.__build_horizontal_rail()
         self.__build_vertical_rail()
