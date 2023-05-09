@@ -9,27 +9,31 @@ from rail_horizontal import HorizontalRail
 from rail_vertical import VerticalRail
 from plate import Plate
 
+
 class Printer:
 
     def __init__(self, tick_rate):
         self.tick_rate = tick_rate
-        self.__dimension = 75  # 75 dimension should create the 180mm print plate size (1 to 1)
+        # 75 dimension should create the 180mm print plate size (1 to 1)
+        self.__dimension = 75
         self.__bed_level = -self.__dimension * 4.5
         self.__plate_x_zero = 0
         self.__plate_z_zero = 0
-        self.__x_offset = self.__dimension * 2.66  # handles the x shift for the entire printer in relation to the camera
+        # handles the x shift for the entire printer in relation to the camera
+        self.__x_offset = self.__dimension * 2.6
 
         self.__model_x_position = 0
         self.__model_y_position = 0  # model positions account for the 3D model of the printer
         self.__model_z_position = 0
         # The 3D model of the printer shouldn't be used as the position for the g-code instructions
         self.__nozzle_x_position = 0
-        self.__nozzle_y_position = 0  # print positions account for position in 3D space of the printer head
+        # print positions account for position in 3D space of the printer head
+        self.__nozzle_y_position = 0
         self.__nozzle_z_position = 0
 
         self.__movement_rate = 0
 
-        self.movement_queue = Queue(maxsize= 0)
+        self.movement_queue = Queue(maxsize=0)
         self.nozzle_position = (0, 0, 0)  # updated whenever the head is built
 
     def get_z_position(self):
@@ -63,9 +67,12 @@ class Printer:
         return movement_info[3]  # returns whether a point should be extruded
 
     def g_code_plane_movement(self, coordinate_info):
-        x_difference = abs(float(coordinate_info[0]) - self.__nozzle_x_position)
-        y_difference = abs(float(coordinate_info[1]) - self.__nozzle_y_position)
-        line_length = math.sqrt((x_difference ** 2) + (y_difference ** 2))  # length in mm of movement line
+        x_difference = abs(
+            float(coordinate_info[0]) - self.__nozzle_x_position)
+        y_difference = abs(
+            float(coordinate_info[1]) - self.__nozzle_y_position)
+        # length in mm of movement line
+        line_length = math.sqrt((x_difference ** 2) + (y_difference ** 2))
         required_ticks = max(int(line_length / self.__movement_rate), 1)
         x_step = (x_difference / required_ticks) if self.__nozzle_x_position < float(coordinate_info[0]) \
             else -(x_difference / required_ticks)
@@ -73,7 +80,8 @@ class Printer:
             else -(y_difference / required_ticks)
 
         for tick in range(required_ticks):
-            self.movement_queue.put((x_step, 0, y_step, coordinate_info[2]))  # print plane has z and y flipped with 3D view plane
+            # print plane has z and y flipped with 3D view plane
+            self.movement_queue.put((x_step, 0, y_step, coordinate_info[2]))
 
     def g_code_layer_movement(self, target_height):
         z_difference = abs(float(target_height) - self.__nozzle_z_position)
@@ -106,7 +114,8 @@ class Printer:
             z_difference -= 1
 
     def adjust_feed_rate(self, feed_rate):
-        mm_per_ms = int(feed_rate) / 30000.0 # adjust the denominator for faster speeds (correct value is 60,000)
+        # adjust the denominator for faster speeds (correct value is 60,000)
+        mm_per_ms = int(feed_rate) / 30000.0
         self.__movement_rate = mm_per_ms * self.tick_rate
         print("New movement rate: %f" % self.__movement_rate)
 
@@ -115,7 +124,8 @@ class Printer:
             self.__model_x_position = 0
             self.__model_y_position = 0
             self.__model_z_position = 0
-            print("X: %d | Y: %d | Z: %d" % (self.__model_x_position, self.__model_y_position, self.__model_z_position))
+            print("X: %d | Y: %d | Z: %d" % (self.__model_x_position,
+                  self.__model_y_position, self.__model_z_position))
 
     def update_printer_frame(self):
         self.__build_printer_head()
@@ -125,7 +135,8 @@ class Printer:
 
     def __build_printer_head(self):
         glBegin(GL_LINES)
-        head = PrinterHead(self.__dimension, self.__x_offset, self.__model_x_position, self.__model_y_position)
+        head = PrinterHead(self.__dimension, self.__x_offset,
+                           self.__model_x_position, self.__model_y_position)
         glColor3d(1.0, 1.0, 1.0)
         for part in head.all_parts:
             for edge in part[1]:
@@ -137,7 +148,8 @@ class Printer:
 
     def __build_horizontal_rail(self):
         glBegin(GL_LINES)
-        horizontal_rail = HorizontalRail(self.__dimension, self.__x_offset, self.__model_y_position)
+        horizontal_rail = HorizontalRail(
+            self.__dimension, self.__x_offset, self.__model_y_position)
         for part in horizontal_rail.all_parts:
             for edge in part[1]:
                 for vertex in edge:
@@ -157,7 +169,8 @@ class Printer:
 
     def __build_plate(self):
         glBegin(GL_LINES)
-        plate = Plate(self.__dimension, self.__x_offset, self.__bed_level, self.__model_z_position)
+        plate = Plate(self.__dimension, self.__x_offset,
+                      self.__bed_level, self.__model_z_position)
         for part in plate.all_parts:
             for edge in part[1]:
                 for vertex in edge:

@@ -16,11 +16,11 @@ def drawUIText(x, y, font_size, textString):
     return render.get_width(), render.get_height()
 
 
-def drawUI(size):
+def drawUI(size, margins):
     w, h = size
     t1w, t1h = drawUIText(
-        w/2, h - (30), 16, "Head Speed: 0 m/s.")
+        10, h - (30), 16, "Head Speed: 0 m/s.")
     t2w, t2h = drawUIText(
-        w/2, h - (30 + t1h), 16, "Extrusion Speed: 0 m/s.")
+        10 + t1w + margins, h - (30), 16, "Extrusion Speed: 0 m/s.")
     t3w, t3h = drawUIText(
-        w/2, h - (30 + t1h + t2h), 16, "Extruded Length: 100 m.")
+        10 + t1w + t2w + (margins * 2), h - (30), 16, "Extruded Length: 100 m.")

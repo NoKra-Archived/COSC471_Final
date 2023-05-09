@@ -44,7 +44,7 @@ def main():
         camera.update_camera_frame(pygame.key.get_pressed())
         print_object.update_object_frame()
         printer.update_printer_frame()
-        UI.drawUI(camera.get_size())
+        UI.drawUI(camera.get_size(), 10)
 
         pygame.display.flip()
         pygame.time.wait(tick_rate)
