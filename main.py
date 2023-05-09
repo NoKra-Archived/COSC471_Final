@@ -1,3 +1,5 @@
+import numpy
+import UI
 import pygame
 import random
 
@@ -42,6 +44,7 @@ def main():
         camera.update_camera_frame(pygame.key.get_pressed())
         print_object.update_object_frame()
         printer.update_printer_frame()
+        UI.drawUI(camera.get_size())
 
         pygame.display.flip()
         pygame.time.wait(tick_rate)

@@ -3,6 +3,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+
 class Camera:
     def __init__(self, display_dimensions):
         self.display_dimensions = display_dimensions
@@ -21,7 +22,8 @@ class Camera:
         self.init_y_translate = 100
         self.init_z_translate = -1000
 
-        glTranslatef(self.init_x_translate, self.init_y_translate, self.init_z_translate)
+        glTranslatef(self.init_x_translate,
+                     self.init_y_translate, self.init_z_translate)
 
         self.rotation_x = 0
         self.rotation_y = 0
@@ -34,7 +36,8 @@ class Camera:
         self.__zoom_event(event)
         self.__reset_camera_event(event)
 
-    def update_camera_frame(self, pressed_key):  # there's definitely a better way to do this, way too many if statements
+    # there's definitely a better way to do this, way too many if statements
+    def update_camera_frame(self, pressed_key):
         self.__x_rotation_pressed(pressed_key)
         self.__y_rotation_pressed(pressed_key)
         self.__panning_pressed(pressed_key)
@@ -44,9 +47,11 @@ class Camera:
             if event.key == pygame.K_x:
                 glLoadIdentity()
                 gluPerspective(self.init_fov_y,
-                               (self.display_dimensions[0] / self.display_dimensions[1]),
+                               (self.display_dimensions[0] /
+                                self.display_dimensions[1]),
                                self.init_z_near, self.init_z_far)
-                glTranslatef(self.init_x_translate, self.init_y_translate, self.init_z_translate)
+                glTranslatef(self.init_x_translate,
+                             self.init_y_translate, self.init_z_translate)
                 self.rotation_x = 0
                 self.rotation_y = 0
                 self.rotation_z = 0
@@ -58,9 +63,11 @@ class Camera:
                 modded_x = abs_x_rot % 90
                 quadrant = self.zoom_rate if abs_x_rot <= 90 else -self.zoom_rate
                 if event.y == -1:
-                    glTranslatef(quadrant * (modded_x / 90), 0, quadrant * (-(90 - modded_x) / 90))
+                    glTranslatef(quadrant * (modded_x / 90), 0,
+                                 quadrant * (-(90 - modded_x) / 90))
                 if event.y == 1:
-                    glTranslatef(quadrant * (-modded_x / 90), 0, quadrant * ((90 - modded_x) / 90))
+                    glTranslatef(quadrant * (-modded_x / 90), 0,
+                                 quadrant * ((90 - modded_x) / 90))
             elif abs_x_rot == 90:
                 if event.y == -1:
                     glTranslatef(self.zoom_rate, 0.0, 0.0)
@@ -70,9 +77,11 @@ class Camera:
                 modded_x = abs_x_rot % 90
                 quadrant = self.zoom_rate if abs_x_rot < 180 else -self.zoom_rate
                 if event.y == -1:
-                    glTranslatef(quadrant * ((90 - modded_x) / 90), 0, quadrant * (modded_x / 90))
+                    glTranslatef(quadrant * ((90 - modded_x) / 90),
+                                 0, quadrant * (modded_x / 90))
                 if event.y == 1:
-                    glTranslatef(quadrant * (-(90 - modded_x) / 90), 0, quadrant * (-modded_x / 90))
+                    glTranslatef(quadrant * (-(90 - modded_x) / 90),
+                                 0, quadrant * (-modded_x / 90))
             elif abs_x_rot == 180:
                 if event.y == -1:
                     glTranslatef(0.0, 0.0, self.zoom_rate)
@@ -120,3 +129,7 @@ class Camera:
             glTranslatef(0, 0, -self.pan_rate)
         elif pressed_key[pygame.K_e]:
             glTranslatef(0, 0, self.pan_rate)
+
+    def get_size(self):
+        print((self.display_dimensions[0], self.display_dimensions[1]))
+        return (self.display_dimensions[0], self.display_dimensions[1])
