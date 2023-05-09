@@ -12,8 +12,9 @@ from plate import Plate
 
 class Printer:
 
-    def __init__(self, tick_rate):
+    def __init__(self, tick_rate, sim_multi):
         self.tick_rate = tick_rate
+        self.sim_multi = sim_multi
         # 75 dimension should create the 180mm print plate size (1 to 1)
         self.__dimension = 75
         self.__bed_level = -self.__dimension * 4.5
@@ -35,6 +36,7 @@ class Printer:
 
         self.movement_queue = Queue(maxsize=0)
         self.nozzle_position = (0, 0, 0)  # updated whenever the head is built
+        self.current_layer = 0
 
     def get_z_position(self):
         return self.__model_z_position
@@ -115,7 +117,7 @@ class Printer:
 
     def adjust_feed_rate(self, feed_rate):
         # adjust the denominator for faster speeds (correct value is 60,000)
-        mm_per_ms = int(feed_rate) / 30000.0
+        mm_per_ms = int(feed_rate) / (60000.0 / self.sim_multi)
         self.__movement_rate = mm_per_ms * self.tick_rate
         print("New movement rate: %f" % self.__movement_rate)
 

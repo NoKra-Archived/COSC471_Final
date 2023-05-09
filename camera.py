@@ -5,10 +5,10 @@ from OpenGL.GLU import *
 
 
 class Camera:
-    def __init__(self, display_dimensions):
-        self.display_dimensions = display_dimensions
+    def __init__(self):
+        display = pygame.display.set_mode((0, 0), DOUBLEBUF | OPENGL)
 
-        pygame.display.set_mode(self.display_dimensions, DOUBLEBUF | OPENGL)
+        self.display_dimensions = display.get_size()
 
         self.init_fov_y = 45
         self.init_z_near = 0.1
@@ -131,5 +131,4 @@ class Camera:
             glTranslatef(0, 0, self.pan_rate)
 
     def get_size(self):
-        print((self.display_dimensions[0], self.display_dimensions[1]))
         return (self.display_dimensions[0], self.display_dimensions[1])

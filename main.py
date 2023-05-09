@@ -11,11 +11,12 @@ from printed_object import PrintedObject
 
 def main():
     pygame.init()
-    display = (1600, 1000)
-    tick_rate = 3  # adjust tick_rate / adjust_feed_rate for a good balance of performance /clarity
+    sim_rate = 10
+    # adjust tick_rate / adjust_feed_rate for a good balance of performance /clarity
+    tick_rate = 3
 
-    camera = Camera(display)
-    printer = Printer(tick_rate)
+    camera = Camera()
+    printer = Printer(tick_rate, sim_rate)
     print_object = PrintedObject(printer)
     g_code = GCode(printer, "sample_2.txt")
 
@@ -37,14 +38,14 @@ def main():
             if should_extrude:
                 print_object.insert_point()
                 points += 1
-                print("Points: %d" % points)
+                # print("Points: %d" % points)
         elif not g_code.command_queue.empty():
             g_code.process_g_code()
 
         camera.update_camera_frame(pygame.key.get_pressed())
         print_object.update_object_frame()
         printer.update_printer_frame()
-        UI.drawUI(camera.get_size(), 10)
+        UI.drawUI(camera.get_size(), 10, printer, sim_rate)
 
         pygame.display.flip()
         pygame.time.wait(tick_rate)
