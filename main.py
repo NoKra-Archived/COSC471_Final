@@ -11,7 +11,7 @@ from printed_object import PrintedObject
 
 def main():
     pygame.init()
-    sim_rate = 10
+    sim_rate = 1
     # adjust tick_rate / adjust_feed_rate for a good balance of performance /clarity
     tick_rate = 3
 
@@ -45,7 +45,7 @@ def main():
         camera.update_camera_frame(pygame.key.get_pressed())
         print_object.update_object_frame()
         printer.update_printer_frame()
-        UI.drawUI(camera.get_size(), 10, printer, sim_rate)
+        UI.drawUI(camera.get_size(), printer, sim_rate)
 
         pygame.display.flip()
         pygame.time.wait(tick_rate)

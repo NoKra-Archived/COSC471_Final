@@ -38,6 +38,10 @@ class Printer:
         self.nozzle_position = (0, 0, 0)  # updated whenever the head is built
         self.current_layer = 0
 
+        # extrusion variables
+        self.extrusion_speed = 0
+        self.total_extruded = 0
+
     def get_z_position(self):
         return self.__model_z_position
 
@@ -181,3 +185,15 @@ class Printer:
         glEnd()
         self.__plate_x_zero = plate.get_x_zero()
         self.__plate_z_zero = plate.get_z_zero()
+
+    def set_extrusion_speed(self, new_es):
+        self.extrusion_speed = float(new_es)
+
+    def get_extrusion_speed(self):
+        return self.extrusion_speed
+
+    def add_to_extruded_total(self):
+        self.total_extruded += self.extrusion_speed
+
+    def get_total_extruded(self):
+        return self.total_extruded.__round__(5)

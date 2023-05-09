@@ -45,6 +45,10 @@ class GCode:
                     case "Z":
                         code_z = param[1:]
                     case "E":
+                        if not "-" in param[1:]:
+                            print(True)
+                            self.printer.set_extrusion_speed(param[1:])
+                            self.printer.add_to_extruded_total()
                         extrude = True
             if code_x != 0 or code_y != 0:
                 self.printer.g_code_plane_movement((code_x, code_y, extrude))
