@@ -9,6 +9,8 @@ class Camera:
 
         pygame.display.set_mode(self.display_dimensions, DOUBLEBUF | OPENGL)
 
+
+
         self.init_fov_y = 45
         self.init_z_near = 0.1
         self.init_z_far = 3000

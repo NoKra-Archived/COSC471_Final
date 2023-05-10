@@ -45,3 +45,4 @@ class GCode:
             self.printer.g_code_plane_movement((code_x, code_y, extrude))
         elif code_z != 0:
             self.printer.g_code_layer_movement(code_z)
+
