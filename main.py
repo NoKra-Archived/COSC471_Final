@@ -1,3 +1,5 @@
+import numpy
+import UI
 import pygame
 
 from printer import Printer
@@ -8,10 +10,12 @@ from printed_object import PrintedObject
 
 def main():
     pygame.init()
-    display = (1600, 1000)  # screen size
-    tick_rate = 1  # keep this at one, control speed with adjust_movement_rate in printer
-    camera = Camera(display)
-    printer = Printer(tick_rate)
+    sim_rate = 1
+    # adjust tick_rate / adjust_feed_rate for a good balance of performance /clarity
+    tick_rate = 1
+
+    camera = Camera()
+    printer = Printer(tick_rate, sim_rate)
     print_object = PrintedObject(printer)
     g_code = GCode(printer, "astro.txt")  # just change a .gcode file to .txt extension
 
@@ -32,7 +36,6 @@ def main():
             camera.update_camera_event(event)
 
         if not printer.movement_queue.empty():
-
             insert_status = printer.move_printer()
             if insert_status[1]:
                 print_object.insert_temporary_point()
@@ -47,6 +50,7 @@ def main():
         camera.update_camera_frame(pygame.key.get_pressed())
         print_object.update_object_frame()
         printer.update_printer_frame()
+        UI.drawUI(camera.get_size(), printer, sim_rate)
 
         pygame.display.flip()
         pygame.time.wait(tick_rate)
