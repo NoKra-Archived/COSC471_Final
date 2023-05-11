@@ -10,14 +10,15 @@ from printed_object import PrintedObject
 
 def main():
     pygame.init()
-    sim_rate = 1
+    sim_rate = 60000
     # adjust tick_rate / adjust_feed_rate for a good balance of performance /clarity
     tick_rate = 1
 
     camera = Camera()
     printer = Printer(tick_rate, sim_rate)
     print_object = PrintedObject(printer)
-    g_code = GCode(printer, "astro.txt")  # just change a .gcode file to .txt extension
+    # just change a .gcode file to .txt extension
+    g_code = GCode(printer, "astro.txt")
 
     is_printing = False  # locks printing if printing is already in progress
     is_paused = False  #
@@ -32,6 +33,9 @@ def main():
                     is_printing = True
                 if event.key == pygame.K_z:
                     is_paused = not is_paused
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    quit()
 
             camera.update_camera_event(event)
 

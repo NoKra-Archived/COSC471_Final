@@ -26,3 +26,7 @@ def drawUI(size, printer, sr):
         10, h - (30 + t1h + t2h), 16, "Current Extrusion Speed: " + printer.get_extrusion_speed().__str__() + " mm/min.")
     t4w, t4h = drawUIText(
         10, h - (30 + t1h + t2h + t3h), 16, "Extruded Length: " + printer.get_total_extruded().__str__() + " mm^3.")
+
+
+def drawHelpMenu():
+    pass
