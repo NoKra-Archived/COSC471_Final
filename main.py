@@ -1,6 +1,6 @@
-import numpy
 import UI
 import pygame
+import time
 
 from printer import Printer
 from camera import Camera
@@ -9,8 +9,12 @@ from printed_object import PrintedObject
 
 
 def main():
+    global printing_start_time
+    global printing_time
+    printing_start_time = 0
+    printing_time = 0
     pygame.init()
-    sim_rate = 60000
+    sim_rate = 5
     # adjust tick_rate / adjust_feed_rate for a good balance of performance /clarity
     tick_rate = 1
 
@@ -29,6 +33,7 @@ def main():
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_f and not is_printing:
+                    printing_start_time = time.time()
                     printer.start_print(g_code)
                     is_printing = True
                 if event.key == pygame.K_z:
@@ -51,10 +56,12 @@ def main():
         else:
             is_printing = False
 
+        if is_printing:
+            printing_time = time.time() - printing_start_time
         camera.update_camera_frame(pygame.key.get_pressed())
         print_object.update_object_frame()
         printer.update_printer_frame()
-        UI.drawUI(camera.get_size(), printer, sim_rate)
+        UI.drawUI(camera.get_size(), printer, sim_rate, printing_time)
 
         pygame.display.flip()
         pygame.time.wait(tick_rate)
