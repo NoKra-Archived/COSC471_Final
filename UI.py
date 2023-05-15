@@ -19,7 +19,6 @@ def drawUIText(x, y, font_size, textString):
 
 
 def drawUI(size, printer, sr, pt):
-    pt = int(pt) * sr
     w, h = size
     pm = 0
     ps = 0
@@ -31,29 +30,15 @@ def drawUI(size, printer, sr, pt):
         10, h - (30 + t1h + t2h), 16, "Current Extrusion Speed: " + printer.get_extrusion_speed().__str__() + " mm/min.")
     t4w, t4h = drawUIText(
         10, h - (30 + t1h + t2h + t3h), 16, "Extruded Length: " + printer.get_total_extruded().__str__() + " mm^3.")
-    if (pt > 59):
-        pm = int(pt / 60)
-        ps = int(pt % 60)
-        if (pm < 10 and ps < 10):
-            t5w, t5h = drawUIText(
-                10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: 0" + pm.__str__() + ":0" + ps.__str__())
-        if (pm < 10 and ps >= 10):
-            t5w, t5h = drawUIText(
-                10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: 0" + pm.__str__() + ":" + ps.__str__())
-        if (pm >= 10 and ps < 10):
-            t5w, t5h = drawUIText(
-                10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: " + pm.__str__() + ":0" + ps.__str__())
-        if (pm >= 10 and ps >= 10):
-            t5w, t5h = drawUIText(
-                10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: " + pm.__str__() + ":" + ps.__str__())
-    else:
-        if (pt < 10):
-            t5w, t5h = drawUIText(
-                10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: 00:0" + pt.__str__())
-        else:
-            t5w, t5h = drawUIText(
-                10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: 00:" + pt.__str__())
+    t5w, t5h = drawUIText(
+        10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: " + format_print_time(pt))
 
+
+def format_print_time(print_time):
+    seconds = int(print_time % 60)
+    minutes = int((print_time % 3600) / 60)
+    hours = int(print_time / 3600)
+    return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
 def drawHelpMenu():
     pass

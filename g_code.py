@@ -37,7 +37,7 @@ class GCode:
             for param in parameters:
                 match param[:1]:
                     case "F":
-                        self.printer.adjust_feed_rate(param[1:])
+                        self.printer.set_feed_rate(param[1:])
                     case "X":
                         code_x = param[1:]
                     case "Y":

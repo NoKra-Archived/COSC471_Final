@@ -12,10 +12,9 @@ from plate import Plate
 
 class Printer:
 
-    def __init__(self, tick_rate, sim_multi):
+    def __init__(self, tick_rate):
         self.tick_rate = tick_rate
         self.__dimension = 37.5  # 37.5 dimension should create the 180mm print plate size (1 to 1)
-        self.sim_multi = sim_multi
         self.__bed_level = -self.__dimension * 4.5
         self.__plate_x_zero = 0
         self.__plate_z_zero = 0
@@ -31,7 +30,9 @@ class Printer:
         self.__nozzle_y_position = 0
         self.__nozzle_z_position = 0
 
-        self.__movement_rate = 0
+        self.__simulation_speed = 100
+        self.__feed_rate = 0
+        self.__movement_rate = 0.0
 
         self.movement_queue = Queue(maxsize=0)
         self.nozzle_position = (0, 0, 0)  # updated whenever the head is built
@@ -49,6 +50,15 @@ class Printer:
 
     def get_nozzle_position(self):
         return self.nozzle_position[0],  self.nozzle_position[1], (self.__model_z_position - self.nozzle_position[2])
+
+    def set_feed_rate(self, feed_rate):
+        self.__feed_rate = float(feed_rate)
+
+    def get_movement_rate(self):
+        return self.__movement_rate
+
+    def get_simulation_rate(self):
+        return self.__simulation_speed
 
     def start_print(self, g_code):
         self.__zero_head()
@@ -68,6 +78,7 @@ class Printer:
         return movement_info[3], movement_info[4]  # returns whether a point should be extruded
 
     def g_code_plane_movement(self, coordinate_info):
+        self.__calculate_movement_rate()
         x_difference = abs(
             float(coordinate_info[0]) - self.__nozzle_x_position)
         y_difference = abs(
@@ -79,7 +90,6 @@ class Printer:
             else -(x_difference / required_ticks)
         y_step = (y_difference / required_ticks) if self.__nozzle_y_position < float(coordinate_info[1]) \
             else -(y_difference / required_ticks)
-
         self.movement_queue.put(
             (0, 0, 0, coordinate_info[2], coordinate_info[2]))
         for tick in range(required_ticks):
@@ -89,6 +99,7 @@ class Printer:
             (0, 0, 0, coordinate_info[2], coordinate_info[2]))
 
     def g_code_layer_movement(self, target_height):
+        self.__calculate_movement_rate()
         z_difference = abs(float(target_height) - self.__nozzle_z_position)
         required_ticks = max(int(z_difference / self.__movement_rate), 1)
         z_step = (z_difference / required_ticks) if self.__nozzle_z_position < float(target_height) \
@@ -118,11 +129,18 @@ class Printer:
             x_difference -= 1
             z_difference -= 1
 
-    def adjust_feed_rate(self, feed_rate):
-        # adjust the denominator for faster speeds (correct value is 60,000)
-        mm_per_ms = int(feed_rate) / (60000.0 / self.sim_multi)
+    def __calculate_movement_rate(self):
+        mm_per_ms = self.__feed_rate / (60000.0 / self.__simulation_speed)
         self.__movement_rate = mm_per_ms * self.tick_rate
         print("New movement rate: %f" % self.__movement_rate)
+
+    def increase_simulation_speed(self):
+        self.__simulation_speed += 1
+
+    def decrease_simulation_speed(self):
+        if self.__simulation_speed <= 1:
+            return
+        self.__simulation_speed -= 1
 
     def __reset_printer(self, event):
         if event.key == pygame.K_z:  # resets x and y positions
