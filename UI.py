@@ -20,8 +20,6 @@ def drawUIText(x, y, font_size, textString):
 
 def drawUI(size, printer, sr, pt):
     w, h = size
-    pm = 0
-    ps = 0
     t1w, t1h = drawUIText(
         10, h - (30), 16, "Layer " + printer.current_layer.__str__() + ".")
     t2w, t2h = drawUIText(
@@ -39,6 +37,7 @@ def format_print_time(print_time):
     minutes = int((print_time % 3600) / 60)
     hours = int(print_time / 3600)
     return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
+
 
 def drawHelpMenu():
     pass
