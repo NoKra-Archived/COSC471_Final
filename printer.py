@@ -14,8 +14,8 @@ class Printer:
 
     def __init__(self, tick_rate):
         self.tick_rate = tick_rate
-        self.__dimension = 37.5  # 37.5 dimension should create the 180mm print plate size (1 to 1)
-        self.sim_multi = sim_multi
+        # 37.5 dimension should create the 180mm print plate size (1 to 1)
+        self.__dimension = 37.5
         self.__bed_level = -self.__dimension * 4.5
         self.__plate_x_zero = 0
         self.__plate_z_zero = 0
