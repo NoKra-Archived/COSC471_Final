@@ -18,7 +18,7 @@ def main():
     printer = Printer(tick_rate)
     print_object = PrintedObject(printer)
     # just change a .gcode file to .txt extension
-    g_code = GCode(printer, "bear.txt")
+    g_code = GCode(printer, "astro.txt")
 
     is_printing = False  # locks printing if printing is already in progress
     is_paused = False  #
@@ -41,7 +41,6 @@ def main():
                     pygame.quit()
                     quit()
 
-
             camera.update_camera_event(event)
 
         if not printer.movement_queue.empty():
@@ -58,7 +57,8 @@ def main():
         camera.update_camera_frame(pygame.key.get_pressed())
         print_object.update_object_frame()
         printer.update_printer_frame()
-        UI.drawUI(camera.get_size(), printer, printer.get_simulation_rate(), printing_time)
+        UI.drawUI(camera.get_size(), printer,
+                  printer.get_simulation_rate(), printing_time)
 
         pygame.display.flip()
         # pygame.time.wait(tick_rate)
