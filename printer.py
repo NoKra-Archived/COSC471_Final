@@ -15,6 +15,7 @@ class Printer:
     def __init__(self, tick_rate):
         self.tick_rate = tick_rate
         self.__dimension = 37.5  # 37.5 dimension should create the 180mm print plate size (1 to 1)
+        self.sim_multi = sim_multi
         self.__bed_level = -self.__dimension * 4.5
         self.__plate_x_zero = 0
         self.__plate_z_zero = 0
@@ -75,7 +76,8 @@ class Printer:
         self.__nozzle_y_position += movement_info[2]
         self.__nozzle_z_position += movement_info[1]
 
-        return movement_info[3], movement_info[4]  # returns whether a point should be extruded
+        # returns whether a point should be extruded
+        return movement_info[3], movement_info[4]
 
     def g_code_plane_movement(self, coordinate_info):
         self.__calculate_movement_rate()
@@ -149,6 +151,7 @@ class Printer:
             self.__model_z_position = 0
             print("X: %d | Y: %d | Z: %d" % (self.__model_x_position,
                   self.__model_y_position, self.__model_z_position))
+
     def update_printer_frame(self):
         self.__build_printer_head()
         self.__build_horizontal_rail()
