@@ -61,7 +61,7 @@ def main():
                   printer.get_simulation_rate(), printing_time)
 
         pygame.display.flip()
-        # pygame.time.wait(tick_rate)
+        pygame.time.wait(tick_rate)
 
 
 main()

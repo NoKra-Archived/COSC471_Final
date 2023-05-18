@@ -24,15 +24,31 @@ Use this command on Mac/Linux to start the program from the terminal:
 
 ``/path/to/folder/COSC471_Final/.venv/bin/python /path/to/folder/COSC471_Final/main.py``
 
+Alternatively: 
+
+Using any IDE that works with Python (VSCode, Pycharm), just run the main.py file
+
+After running, to start the print, press "F". 
+
+Additional controls can be found below.
+
 ## Adding a new model to the simulator:
 
 1. Download PrusaSlicer here:
 
 https://www.prusa3d.com/page/prusaslicer_424/
 
-2. Download the 3D print of your choice (should be an STL file)
+2. Download the 3D model of your choice (should be an STL file). A few good resources:
 
-3. Import file into PrusaSlicer, and slice WITHOUT INFILL.
+https://www.thingiverse.com/  (free to download models)
+
+https://www.myminifactory.com/ (has both free and pay models)
+
+3. Import file into PrusaSlicer, and slice the model (models with 0% infill will take less time) 
+
+A small guide for using PrusaSlicer, some information is not applicable unless actually printing a model:
+
+https://help.prusa3d.com/article/first-print-with-prusaslicer_1753
 
 4. Click "Export GCode" in the bottom right after slicing completes.
 
