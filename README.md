@@ -13,3 +13,47 @@
 3. Install dependencies from requirements.txt:
 
 ``python -m pip install -r requirements.txt``
+
+## Controls
+
+### Application Controls:
+
+**Quit:** Escape
+
+### Camera Controls:
+
+**Reset:** X
+
+
+**X-axis rotation:** Left, Right
+
+
+**Y-axis rotation:** Up, Down
+
+
+**Pan Left:** A
+
+
+**Pan Right:** D
+
+
+**Pan Up:** W
+
+
+**Pan Down**:S
+
+
+**Pan Towards:** E
+
+
+**Pan Away:** Q 
+
+### Printer Controls: 
+
+
+**Start Printing:** F
+
+
+**Pause Print:** Z
+
+
