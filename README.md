@@ -32,6 +32,8 @@ After running, to start the print, press "F".
 
 Additional controls can be found below.
 
+A demonstration video can be found here [Youtube](https://www.youtube.com/watch?v=32pOA99xX1A)
+
 ## Adding a new model to the simulator:
 
 1. Download PrusaSlicer here:

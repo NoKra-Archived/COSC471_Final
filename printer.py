@@ -31,7 +31,7 @@ class Printer:
         self.__nozzle_y_position = 0
         self.__nozzle_z_position = 0
 
-        self.__simulation_speed = 100
+        self.__simulation_speed = 1
         self.__feed_rate = 0
         self.__movement_rate = 0.0
 
@@ -132,7 +132,7 @@ class Printer:
             z_difference -= 1
 
     def __calculate_movement_rate(self):
-        mm_per_ms = self.__feed_rate / (60000.0 / self.__simulation_speed)
+        mm_per_ms = self.__feed_rate / (30000.0 / self.__simulation_speed)
         self.__movement_rate = mm_per_ms * self.tick_rate
         print("New movement rate: %f" % self.__movement_rate)
 

@@ -28,8 +28,6 @@ def drawUI(size, printer, sr, pt):
         10, h - (30 + t1h + t2h), 16, "Current Extrusion Speed: " + printer.get_extrusion_speed().__str__() + " mm/min.")
     t4w, t4h = drawUIText(
         10, h - (30 + t1h + t2h + t3h), 16, "Extruded Length: " + printer.get_total_extruded().__str__() + " mm^3.")
-    t5w, t5h = drawUIText(
-        10, h - (30 + t1h + t2h + t3h + t4h), 16, "Time Spent Printing: " + format_print_time(pt))
 
 
 def format_print_time(print_time):
